@@ -1,6 +1,9 @@
 package com.bcp.workshop.auth;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.common.QuarkusTestResource;
+import jakarta.inject.Inject;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
 
@@ -10,6 +13,12 @@ import java.util.Base64;
 import java.util.Map;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.security.KeyFactory;
+import java.security.Signature;
+import java.security.spec.X509EncodedKeySpec;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
@@ -17,7 +26,14 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
+@QuarkusTestResource(TokenKeyTestResource.class)
 class AuthResourceTest {
+    @Inject
+    SignedTokenService tokenService;
+
+    @ConfigProperty(name = "auth.token.test-public-key")
+    String testPublicKey;
+
     @BeforeAll
     static void requireIsolatedDatabase() throws java.sql.SQLException {
         try (var ignored = LegacyDatabaseTest.connection()) {
@@ -38,7 +54,7 @@ class AuthResourceTest {
     }
 
     @Test
-    void preservesSuccessfulResponseAndLegacyToken() {
+    void preservesSuccessfulResponseAndReturnsSignedToken() throws Exception {
         for (String username : new String[]{"student", "trainer"}) {
             long before = Instant.now().getEpochSecond();
             var response = given().contentType("application/json")
@@ -53,14 +69,33 @@ class AuthResourceTest {
             assertEquals("Workshop " + (username.equals("student") ? "Student" : "Trainer"),
                     response.getString("user.displayName"));
             assertEquals(3, response.getMap("user").size());
-            String[] token = new String(Base64.getDecoder().decode(response.getString("token")),
-                    StandardCharsets.UTF_8).split("\\|");
-            assertEquals(4, token.length);
-            assertEquals(username, token[0]);
-            assertEquals(response.getString("user.role"), token[1]);
-            long expiry = Long.parseLong(token[2]);
+            Map<String, Object> claims = assertSignedToken(
+                    response.getString("token"), username, response.getString("user.role"));
+            long expiry = ((Number) claims.get("exp")).longValue();
             assertTrue(expiry >= before + 3600 && expiry <= Instant.now().getEpochSecond() + 3600);
         }
+    }
+
+    private Map<String, Object> assertSignedToken(String token, String username, String role) throws Exception {
+        String[] parts = token.split("\\.", -1);
+        assertEquals(3, parts.length);
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> header = mapper.readValue(
+                Base64.getUrlDecoder().decode(parts[0]), new TypeReference<>() {});
+        assertEquals("RS256", header.get("alg"));
+        assertEquals("JWT", header.get("typ"));
+        Map<String, Object> claims = mapper.readValue(
+                Base64.getUrlDecoder().decode(parts[1]), new TypeReference<>() {});
+        assertEquals(username, claims.get("sub"));
+        assertEquals(role, claims.get("role"));
+
+        var publicKey = KeyFactory.getInstance("RSA").generatePublic(
+                new X509EncodedKeySpec(Base64.getDecoder().decode(testPublicKey)));
+        Signature verifier = Signature.getInstance("SHA256withRSA");
+        verifier.initVerify(publicKey);
+        verifier.update((parts[0] + "." + parts[1]).getBytes(StandardCharsets.US_ASCII));
+        assertTrue(verifier.verify(Base64.getUrlDecoder().decode(parts[2])));
+        return claims;
     }
 
     @Test
@@ -183,6 +218,7 @@ class AuthResourceTest {
     private AuthResource resourceWithService(AuthenticationService service) {
         AuthResource resource = new AuthResource();
         resource.authenticationService = service;
+        resource.tokenService = tokenService;
         return resource;
     }
 

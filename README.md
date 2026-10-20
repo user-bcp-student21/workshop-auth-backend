@@ -26,15 +26,29 @@ Credenciales locales:
 
 ## Propósito de la rama `main`
 
-La rama contiene deuda técnica y de seguridad deliberada: SQL concatenado, contraseñas en texto plano, token reversible, secreto hardcodeado, CORS permisivo, método largo, manejo genérico de excepciones y dependencias con CVEs.
+La rama contiene deuda técnica y de seguridad deliberada: SQL concatenado, CORS permisivo, método largo, manejo genérico de excepciones y dependencias con CVEs.
 
 ## Correcciones H-01 y H-02
 
-En este trabajo se parametrizó el acceso SQL y se reemplazó el almacenamiento
+En este trabajo se parametrizó el acceso SQL, se reemplazó el almacenamiento
 activo de contraseñas por PBKDF2-HMAC-SHA256: 600000 iteraciones, salt aleatorio
-de 16 bytes y derivado de 32 bytes. No se agregaron dependencias.
-El token legacy y los demás hallazgos del laboratorio permanecen pendientes;
-estas correcciones no convierten el proyecto en apto para producción.
+de 16 bytes y derivado de 32 bytes, y se sustituyó el token legacy por JWT
+firmado con RS256. La clave privada debe configurarse mediante
+`AUTH_TOKEN_SIGNING_KEY_PATH`; no se incluye una clave de desarrollo en Git.
+Estas correcciones no convierten el proyecto en apto para producción.
+
+Para generar un par RSA local (OpenSSL requerido):
+
+```powershell
+New-Item -ItemType Directory -Force .\data | Out-Null
+openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out .\data\auth-token-private.pem
+openssl pkey -in .\data\auth-token-private.pem -pubout -out .\data\auth-token-public.pem
+$env:AUTH_TOKEN_SIGNING_KEY_PATH = (Resolve-Path .\data\auth-token-private.pem).Path
+mvn quarkus:dev
+```
+
+Configura la API de requisitos con el archivo público correspondiente en
+`AUTH_TOKEN_PUBLIC_KEY_PATH`. No compartas ni agregues la clave privada a Git.
 
 ### Migración de SQLite
 

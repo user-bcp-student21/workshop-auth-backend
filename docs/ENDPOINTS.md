@@ -92,7 +92,7 @@ tener otras credenciales, nombres y roles.
 
 | campo | tipo | descripcion |
 |---|---|---|
-| token | string | Token legacy generado para la identidad encontrada; ver advertencias del punto 6. |
+| token | string | JWT firmado con RS256 para la identidad encontrada; lo valida la API de requisitos con la clave pública correspondiente. |
 | expiresIn | number (entero) | Duracion anunciada, siempre 3600 segundos. |
 | user | object | Identidad publica; no incluye id, contrasena, hash ni salt. |
 | user.username | string | Usuario recuperado de SQLite. |
@@ -111,13 +111,13 @@ Ejemplo completo observado con student:
     "role": "STUDENT",
     "username": "student"
   },
-  "token": "c3R1ZGVudHxTVFVERU5UfDE3OTI0NDk4OTN8V09SS1NIT1BfU0VDUkVUXzIwMjY="
+  "token": "<JWT RS256 emitido por el backend>"
 }
 ```
 
-El token del ejemplo es una salida historica de laboratorio, no una credencial
-vigente para reutilizar. Su valor cambia con el instante de generacion.
-El orden de propiedades JSON no esta garantizado.
+El valor de `token` es ilustrativo, no una credencial válida. Su contenido y
+firma cambian con la identidad, el instante de generación y la clave privada.
+El orden de propiedades JSON no está garantizado.
 Fuente de todos los campos:
 [AuthResource.java:39](../src/main/java/com/bcp/workshop/auth/AuthResource.java#L39).
 La prueba [AuthResourceTest.java:38](../src/test/java/com/bcp/workshop/auth/AuthResourceTest.java#L38)
@@ -167,14 +167,12 @@ El cliente debe manejar respuestas sin JSON y fallos de conectividad.
 
 ### 6. Notas de seguridad
 
-- El token **NO es firmado ni JWT**. Sigue siendo Base64 estandar UTF-8 de
-  usuario, rol, expiracion Unix y secreto fijo, separados por `|`
-  ([LegacyTokenUtil.java:8](../src/main/java/com/bcp/workshop/auth/LegacyTokenUtil.java#L8)).
-  Base64 no cifra ni garantiza integridad.
-- Se genera un timestamp a ahora mas 3600 segundos, pero este backend no
-  contiene un endpoint que verifique token o expiracion. No afirmar que la
-  expiracion se aplica realmente en otros servicios. **Pregunta abierta:**
-  como valida el token cada consumidor externo; estan fuera de este documento.
+- El token es un JWT firmado con RS256. Incluye `sub`, `role` y `exp`; la API de
+  requisitos valida la firma con la clave pública configurada y rechaza tokens
+  vencidos o inválidos.
+- La expiración incluida en `exp` y anunciada mediante `expiresIn` es de 3600
+  segundos. La API de requisitos valida la expiración junto con la firma.
+  Los tokens legacy se invalidan; no hay fallback de compatibilidad.
   No se prescribe un header Bearer para consumidores no inspeccionados.
 - El login ahora busca por usuario mediante PreparedStatement y verifica
   PBKDF2-HMAC-SHA256 con 600000 iteraciones y salt aleatorio. La migracion de
@@ -285,7 +283,7 @@ Codigo y configuracion:
 - [LegacyDatabase.java](../src/main/java/com/bcp/workshop/auth/LegacyDatabase.java).
 - [PasswordHashMigration.java](../src/main/java/com/bcp/workshop/auth/PasswordHashMigration.java).
 - [PasswordHasher.java](../src/main/java/com/bcp/workshop/auth/PasswordHasher.java).
-- [LegacyTokenUtil.java](../src/main/java/com/bcp/workshop/auth/LegacyTokenUtil.java).
+- [SignedTokenService.java](../src/main/java/com/bcp/workshop/auth/SignedTokenService.java).
 - [application.properties](../src/main/resources/application.properties).
 - [pom.xml](../pom.xml): extension de salud y version de Quarkus.
 - [AuthResourceTest.java](../src/test/java/com/bcp/workshop/auth/AuthResourceTest.java):
