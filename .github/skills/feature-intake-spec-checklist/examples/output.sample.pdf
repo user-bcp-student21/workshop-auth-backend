@@ -1,0 +1,130 @@
+%PDF-1.4
+%âãÏÓ
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R 7 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 3479 >>
+stream
+BT /F2 10 Tf 44 801 Td (1. Summary) Tj ET
+BT /F1 9.5 Tf 44 786 Td (Confirmación previa al envío de transferencias, con resumen y validación de datos, para ayudar) Tj ET
+BT /F1 9.5 Tf 44 773 Td (al usuario a evitar duplicados.) Tj ET
+BT /F1 9.5 Tf 44 758 Td (Impacto esperado: reducir un 20% las quejas por transferencias duplicadas en un mes. Línea) Tj ET
+BT /F1 9.5 Tf 44 745 Td (base y método de medición pendientes.) Tj ET
+BT /F2 10 Tf 44 727 Td (2. Scope) Tj ET
+BT /F2 10 Tf 44 709 Td (Dentro del alcance) Tj ET
+BT /F1 9.5 Tf 44 694 Td (- Confirmación previa, resumen y validación de datos, incluido el importe.) Tj ET
+BT /F1 9.5 Tf 44 679 Td (- Integración con API REST, frontend web y servicios de cuentas y transferencias existentes.) Tj ET
+BT /F2 10 Tf 44 661 Td (Fuera del alcance) Tj ET
+BT /F1 9.5 Tf 44 646 Td (- Cambios de infraestructura y rediseño completo de la interfaz.) Tj ET
+BT /F1 9.5 Tf 44 631 Td (- Nuevos mecanismos de deduplicación/idempotencia sin aprobación de alcance.) Tj ET
+BT /F2 10 Tf 44 613 Td (3. Supuestos) Tj ET
+BT /F1 9.5 Tf 44 598 Td (- Se adaptará el flujo existente utilizando el logging estandarizado.) Tj ET
+BT /F1 9.5 Tf 44 583 Td (- Confirmar no garantiza impedir duplicados por concurrencia o reintentos.) Tj ET
+BT /F1 9.5 Tf 44 568 Td (- No se asumen campos, reglas de importe ni comportamiento de cancelación.) Tj ET
+BT /F2 10 Tf 44 550 Td (4. Decisiones técnicas por tomar \(pendientes o resueltas\)) Tj ET
+BT /F1 9.5 Tf 44 535 Td (- Resueltas por la entrada: API REST, frontend web y logging existentes.) Tj ET
+BT /F1 9.5 Tf 44 520 Td (- Pendientes: campos del resumen, enmascaramiento y reglas de importe.) Tj ET
+BT /F1 9.5 Tf 44 505 Td (- Pendientes: responsabilidades de validación y compatibilidad de contratos.) Tj ET
+BT /F1 9.5 Tf 44 490 Td (- Pendientes: cancelación, modificación, reintentos y manejo de errores.) Tj ET
+BT /F2 10 Tf 44 472 Td (5. Riesgos y mitigaciones) Tj ET
+BT /F1 9.5 Tf 44 457 Td (- Exposición de datos en logs: acordar campos permitidos y revisar registros con datos) Tj ET
+BT /F1 9.5 Tf 44 444 Td (sintéticos.) Tj ET
+BT /F1 9.5 Tf 44 429 Td (- Errores de importe: definir moneda, precisión y límites; probar fronteras.) Tj ET
+BT /F1 9.5 Tf 44 414 Td (- Resumen distinto del envío: comprobar correspondencia y acordar tratamiento de) Tj ET
+BT /F1 9.5 Tf 44 401 Td (modificaciones.) Tj ET
+BT /F1 9.5 Tf 44 386 Td (- Duplicados por reintentos: caracterizar controles y documentar límites.) Tj ET
+BT /F2 10 Tf 44 368 Td (6. Criterios de aceptación \(medibles\)) Tj ET
+BT /F1 9.5 Tf 44 353 Td (1\) Todos los escenarios de envío aprobados presentan resumen y confirmación explícita antes de) Tj ET
+BT /F1 9.5 Tf 44 340 Td (solicitar ejecución.) Tj ET
+BT /F1 9.5 Tf 44 325 Td (2\) El 100% de casos de correspondencia tiene datos enviados iguales a los confirmados.) Tj ET
+BT /F1 9.5 Tf 44 310 Td (3\) El 100% de casos inválidos de la matriz aprobada bloquea el envío y muestra el error) Tj ET
+BT /F1 9.5 Tf 44 297 Td (acordado.) Tj ET
+BT /F1 9.5 Tf 44 282 Td (4\) Cero exposiciones de datos sensibles en los logs revisados, conforme a la política) Tj ET
+BT /F1 9.5 Tf 44 269 Td (acordada.) Tj ET
+BT /F1 9.5 Tf 44 254 Td (5\) Pruebas unitarias satisfactorias, documentación breve y PR revisado.) Tj ET
+BT /F1 9.5 Tf 44 239 Td (6\) Reducción de quejas >=20% frente a la línea base acordada tras un mes; se mide después del) Tj ET
+BT /F1 9.5 Tf 44 226 Td (despliegue.) Tj ET
+BT /F1 9 Tf 278 25 Td (1 / 2) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 3533 >>
+stream
+BT /F2 10 Tf 44 801 Td (7. Plan de validación) Tj ET
+BT /F2 10 Tf 44 783 Td (Pruebas unitarias) Tj ET
+BT /F1 9.5 Tf 44 768 Td (- Reglas aprobadas: datos válidos, inválidos y límites de importe.) Tj ET
+BT /F1 9.5 Tf 44 753 Td (- Construcción del resumen, correspondencia y transiciones acordadas.) Tj ET
+BT /F2 10 Tf 44 735 Td (Pruebas funcionales) Tj ET
+BT /F1 9.5 Tf 44 720 Td (- Camino feliz: completar, revisar, confirmar y comprobar resultado.) Tj ET
+BT /F1 9.5 Tf 44 705 Td (- Datos inválidos y errores definidos de cuentas y transferencias.) Tj ET
+BT /F1 9.5 Tf 44 690 Td (- Cancelar/modificar según acuerdos; caracterizar doble clic y reintentos.) Tj ET
+BT /F2 10 Tf 44 672 Td (Seguridad \(comprobaciones mínimas\)) Tj ET
+BT /F1 9.5 Tf 44 657 Td (- Revisar exposición de datos en logs y resumen con datos sintéticos.) Tj ET
+BT /F1 9.5 Tf 44 642 Td (- Comprobar validaciones en servidor y alteración entre resumen y envío.) Tj ET
+BT /F2 10 Tf 44 624 Td (Evidencia requerida \(qué adjuntar\)) Tj ET
+BT /F1 9.5 Tf 44 609 Td (- Salida de pruebas: comando, entorno, código de salida y resultados.) Tj ET
+BT /F1 9.5 Tf 44 594 Td (- Matriz caso-resultado, checklist de seguridad, documentación y PR revisado.) Tj ET
+BT /F1 9.5 Tf 44 579 Td (- Referenciar SKILL.md versionado, examples/input.sample.md y examples/output.sample.md dentro) Tj ET
+BT /F1 9.5 Tf 44 566 Td (de este Skill.) Tj ET
+BT /F1 9.5 Tf 44 551 Td (- Adjuntar este PDF y referencia al tag de versión del Skill. El tag skill-feature-) Tj ET
+BT /F1 9.5 Tf 44 538 Td (intake-v0.1.0 es un ejemplo, no publicación verificada.) Tj ET
+BT /F2 10 Tf 44 520 Td (8. Tareas sugeridas por rol) Tj ET
+BT /F2 10 Tf 44 502 Td (Chapter/PO) Tj ET
+BT /F1 9.5 Tf 44 487 Td (- Aprobar reglas y resumen; acordar línea base y responsable de medición.) Tj ET
+BT /F2 10 Tf 44 469 Td (Tech Lead) Tj ET
+BT /F1 9.5 Tf 44 454 Td (- Revisar contratos de cuentas y transferencias.) Tj ET
+BT /F1 9.5 Tf 44 439 Td (- Definir responsabilidades de validación y consistencia.) Tj ET
+BT /F1 9.5 Tf 44 424 Td (- Resolver alcance y revisar diseño y PR.) Tj ET
+BT /F2 10 Tf 44 406 Td (Backend) Tj ET
+BT /F1 9.5 Tf 44 391 Td (- Contrastar validaciones existentes con reglas aprobadas.) Tj ET
+BT /F1 9.5 Tf 44 376 Td (- Implementar los ajustes necesarios del flujo acordado.) Tj ET
+BT /F1 9.5 Tf 44 361 Td (- Añadir pruebas y comprobar seguridad del logging.) Tj ET
+BT /F2 10 Tf 44 343 Td (Frontend) Tj ET
+BT /F1 9.5 Tf 44 328 Td (- Incorporar resumen y confirmación sin rediseño completo.) Tj ET
+BT /F1 9.5 Tf 44 313 Td (- Implementar estados de interacción y validaciones acordadas.) Tj ET
+BT /F2 10 Tf 44 295 Td (QA) Tj ET
+BT /F1 9.5 Tf 44 280 Td (- Elaborar matriz de camino feliz, límites y errores.) Tj ET
+BT /F1 9.5 Tf 44 265 Td (- Ejecutar integración, correspondencia y reintentos.) Tj ET
+BT /F1 9.5 Tf 44 250 Td (- Adjuntar evidencia reproducible y verificar la DoD.) Tj ET
+BT /F2 10 Tf 44 232 Td (Cyber) Tj ET
+BT /F1 9.5 Tf 44 217 Td (- Revisar datos sensibles/logging; evaluar manipulación y riesgo residual.) Tj ET
+BT /F2 10 Tf 44 199 Td (9. Preguntas abiertas) Tj ET
+BT /F1 9.5 Tf 44 184 Td (1\) Para cerrar los criterios 1-4, ¿qué campos, reglas de importe, comportamientos y política) Tj ET
+BT /F1 9.5 Tf 44 171 Td (de datos sensibles deben aprobarse?) Tj ET
+BT /F1 9.5 Tf 44 156 Td (2\) Para el criterio 6, ¿cuál será la línea base y el mes de observación, qué fuente se usará y) Tj ET
+BT /F1 9.5 Tf 44 143 Td (quién verificará la reducción del 20%?) Tj ET
+BT /F1 9 Tf 278 25 Td (2 / 2) Tj ET
+endstream
+endobj
+xref
+0 9
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000127 00000 n 
+0000000224 00000 n 
+0000000326 00000 n 
+0000000462 00000 n 
+0000003993 00000 n 
+0000004129 00000 n 
+trailer
+<< /Size 9 /Root 1 0 R >>
+startxref
+7714
+%%EOF

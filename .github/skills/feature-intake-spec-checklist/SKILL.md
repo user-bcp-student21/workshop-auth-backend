@@ -28,28 +28,28 @@ Proporciona la información en este formato:
 - **Team Definition of Done (DoD):** (if available)
 
 ## 3) Output
-Devuelve **solo** un documento Markdown con estas secciones y bullets:
+Devuelve **solo** un archivo en pdf con estas secciones y bullets:
 
 1. **Summary**
 2. **Scope**
-	- Dentro del alcance
-	- Fuera del alcance
+    - Dentro del alcance
+    - Fuera del alcance
 3. **Supuestos**
 4. **Decisiones técnicas por tomar (pendientes o resueltas)**
 5. **Riesgos y mitigaciones**
 6. **Criterios de aceptación (medibles)**
 7. **Plan de validación**
-	- Pruebas unitarias
-	- Pruebas funcionales
-	- Seguridad (comprobaciones mínimas)
-	- Evidencia requerida (qué adjuntar)
+    - Pruebas unitarias
+    - Pruebas funcionales
+    - Seguridad (comprobaciones mínimas)
+    - Evidencia requerida (qué adjuntar)
 8. **Tareas sugeridas por rol**
-	- Chapter/PO
-	- Tech Lead
-	- Backend
-	- Frontend
-	- QA
-	- Cyber
+    - Chapter/PO
+    - Tech Lead
+    - Backend
+    - Frontend
+    - QA
+    - Cyber
 9. **Preguntas abiertas**
 
 ## 4) Constraints
@@ -68,6 +68,7 @@ La salida es válida si:
 - Incluye al menos 2 riesgos con mitigaciones.
 - No contiene datos sensibles ni secretos.
 - No contiene supuestos no declarados.
+- Dentro de preguntas abiertas unicamente 2 al punto 6 de criterio de aceptación
 
 ## 6) Evidence
 Adjunta o referencia estos elementos en el PR o entrega:
