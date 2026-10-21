@@ -41,10 +41,12 @@ class AuthResourceTest {
     void preservesSuccessfulResponseAndLegacyToken() {
         for (String username : new String[]{"student", "trainer"}) {
             long before = Instant.now().getEpochSecond();
-            var response = given().contentType("application/json")
+            var httpResponse = given().contentType("application/json")
                     .body(Map.of("username", username, "password",
                             username.equals("student") ? "Workshop123!" : "Trainer123!", "unknown", true))
-                    .post("/auth/login").then().statusCode(200).extract().jsonPath();
+                    .post("/auth/login").then().statusCode(200).extract().response();
+            assertNull(httpResponse.getHeader("Set-Cookie"));
+            var response = httpResponse.jsonPath();
             assertEquals(4, response.getMap("$").size());
             assertEquals(3600, response.getInt("expiresIn"));
             assertEquals("authenticated-with-legacy-flow", response.getString("debug"));
