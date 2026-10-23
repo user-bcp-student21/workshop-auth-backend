@@ -1,6 +1,7 @@
 /target
 /data/*.db
 /data/*.db-*
+/data/*.pem
 /.idea
 *.iml
 .classpath

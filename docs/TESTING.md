@@ -2,9 +2,10 @@
 
 ## Alcance y criterio
 
-Contrato de referencia: [ENDPOINTS.md](ENDPOINTS.md). Fecha de ejecucion:
-2026-10-19. Solo se modifican tests y se crea este documento; no se cambia
-codigo de produccion, dependencias, contrato ni quality gates.
+Contrato de referencia: [ENDPOINTS.md](ENDPOINTS.md). La matriz y resultados
+anteriores corresponden al baseline ejecutado el 2026-10-19. La seccion final
+registra la implementacion RS256, sus pruebas actuales y la integracion local
+con la API de requisitos.
 
 Las expectativas que describen defectos legacy son caracterizacion, no pruebas
 de seguridad aprobatorias. Los defectos se separan mas abajo. Ninguna expectativa
@@ -14,7 +15,7 @@ se relajo para ocultar un fallo. No se introdujeron endpoints ni campos nuevos.
 
 | endpoint | caso | tipo | resultado esperado |
 |---|---|---|---|
-| POST /auth/login | student y trainer con credenciales validas; client presente/omitido | Camino feliz | 200 JSON con token, expiresIn 3600, debug e identidad completa; formato legacy y expiracion anunciada comprobados. |
+| POST /auth/login | student y trainer con credenciales validas; client presente/omitido | Camino feliz | 200 JSON con token, expiresIn 3600, debug e identidad completa; firma RS256, claims y expiracion comprobados. |
 | POST /auth/login | JSON con campo desconocido | Borde | Campo ignorado; login 200 sin campos extra en respuesta. |
 | POST /auth/login | username ausente, null, vacio o solo espacios | Borde/error | 400, message Username is required; se valida antes de password. |
 | POST /auth/login | password ausente, null, vacio o solo espacios | Borde/error | 400, message Password is required. |
@@ -223,9 +224,9 @@ son esperados; las aserciones pasan. No se descartan excepciones inesperadas.
 ## Cobertura: reporte y metodo de medicion
 
 Meta de [REGLAS.md](../REGLAS.md): al menos 85% del codigo modificado.
-Esta entrega solo agrega/modifica pruebas; JaCoCo del repositorio mide clases
-de produccion, no la cobertura del propio codigo de tests. No se presenta
-una cobertura ficticia de tests.
+Los porcentajes de esta seccion describen el baseline del 2026-10-19 y no
+la cobertura del cambio RS256, que se registra al final. JaCoCo mide clases de
+produccion, no la cobertura del propio codigo de tests.
 
 Ademas de ejecutar todos los nuevos metodos, se midio el codigo de produccion
 del diff local acumulado contra main:
@@ -325,4 +326,41 @@ logs, reportes y archivo de cobertura se conservaron bajo target para inspeccion
   ejecucion automatica y herramientas existentes.
 
 Tambien se consultaron las pruebas existentes de AuthResource y el codigo
-referenciado para justificar la induccion de errores sin modificar produccion.
+referenciado para justificar la induccion de errores.
+
+## Implementacion RS256 e integracion (2026-10-20)
+
+### Backend de autenticacion
+
+Comando desde el worktree aislado, con JDK 21 y base SQLite bajo `target`:
+
+```powershell
+$env:JAVA_HOME = 'C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot'
+$env:AUTH_DB_URL = 'jdbc:sqlite:./target/test-data/token-final3.db'
+mvn -q clean verify
+```
+
+Resultado real: **29 tests, 0 fallos, 0 errores**. JaCoCo cubre 8/8 lineas de
+`SignedTokenService` y 19/19 de `SigningKeyProvider`. Las pruebas verifican
+firma RS256, identidad, rol, expiracion, rechazos por clave ausente/invalida y
+preservacion del sobre HTTP de login.
+
+### API de requisitos
+
+Con el entorno aislado de Python 3.13.15 y dependencias de `requirements.txt`:
+
+```powershell
+python -m pytest -q --cov=app --cov-report=term-missing tests
+python -m pip check
+```
+
+Resultado real: **8 tests aprobados**, cobertura global de `app.main.py` **87%**
+y `pip check`: **No broken requirements found**. Se observaron advertencias de
+deprecacion preexistentes de `FastAPI.on_event` y AnyIO.
+
+### Integracion HTTP entre servicios
+
+Con un par RSA efimero fuera de los repositorios: `POST /auth/login` devolvio
+HTTP 200, `expiresIn=3600` y un JWT de tres segmentos; al enviarlo como Bearer,
+`GET /api/tasks` respondio HTTP 200 con las dos tareas esperadas. La clave
+efimera se elimino al terminar la comprobacion; no se imprimio ni versiono.

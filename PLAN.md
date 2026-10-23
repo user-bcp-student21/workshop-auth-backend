@@ -1,5 +1,19 @@
 # Propuesta de correccion de H-03 y H-04
 
+> Estado: implementacion aprobada el 2026-10-20 y registrada en
+> [HALLAZGOS.md](HALLAZGOS.md). Las secciones siguientes conservan la propuesta
+> historica; issuer/audience y rotacion siguen fuera de la decision aprobada.
+
+## Implementacion aprobada
+
+- Emision JWT RS256 mediante `quarkus-smallrye-jwt-build`, con `sub`, `role` y
+  `exp` de 3600 segundos.
+- Clave privada RSA PKCS#8 externa, configurada por
+  `AUTH_TOKEN_SIGNING_KEY_PATH`; sin clave por defecto ni fallback.
+- La API de requisitos valida firma y expiracion con la clave publica de
+  `AUTH_TOKEN_PUBLIC_KEY_PATH`. Los tokens legacy se invalidan.
+- Emisor y verificador se entregan en PRs coordinados separados.
+
 ## Alcance y referencias
 
 Solo planificacion dentro de workshop-auth-backend. Este documento sustituye
@@ -18,6 +32,10 @@ JWT RS256 en lugar de Base64 legacy. Esa aprobacion es antecedente, no evidencia
 de que los consumidores hayan coordinado el cambio ni aprobacion automatica
 de esta nueva revision acotada. Esta solicitud autoriza solo documentacion.
 Antes de implementar, confirmar esta revision y cerrar los acuerdos indicados.
+
+La aprobacion posterior del 2026-10-20 autorizo la implementacion coordinada de
+RS256, la invalidacion inmediata del formato legacy y dos PRs por repositorio;
+esta decision posterior reemplaza la limitacion documental indicada arriba.
 
 Siguen pendientes los valores exactos de issuer/audience, la aceptacion del
 formato/claims por consumidores, y responsables/procedimiento de distribucion
